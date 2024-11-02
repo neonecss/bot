@@ -2,21 +2,17 @@ import sqlite3
 import time
 import random
 from collections import Counter
+from scanQR import scanQR
 
 # Подключение к базе данных
 conn = sqlite3.connect('orders.db')
 cursor = conn.cursor()
 
 boxes = {
-    1: {"classification": ""},
-    2: {"classification": ""},
-    3: {"classification": ""},
+    1: {"classification": "2"},
+    2: {"classification": "3"},
+    3: {"classification": "1"},
 }
-
-# Функция, которая будет обращаться к другому файлу (сканирование QR и return полученного значения)
-def scanQR():
-    result = random.randint(1, 3)  # Генерирует число от 1 до 3, симулируя работу сканирования и получения ID item
-    return result
 
 # Функция сборки заказа
 def assemblyOrder():
@@ -40,12 +36,13 @@ def assemblyOrder():
                         for index, box in boxes.items():
                             # Сравнение с преобразованием classification в число
                             if box["classification"] and int(box["classification"]) == item_num:
+                                print(f'Новая итерация с item {item}')
                                 print(f"Item {item} принадлежит индексу {index}")
                                 found = True
                                 break
                         if not found:
                             print(f"Item {item} не найден в классификациях boxes")
-        break
+        break # потом вместо break поставить удаление строки из БД
 
 # Функция запускаемая самой первой, для сканирования QR и записи значений в словарь boxes
 def start():
